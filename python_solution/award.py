@@ -1,40 +1,29 @@
+from python_solution.award_types.BlueCompare import BlueCompare
+from python_solution.award_types.BlueStar import BlueStar
+from python_solution.award_types.BlueFirst import BlueFirst
+from python_solution.award_types.NormalAward import NormalAward
+
+
 class Award(object):
-    def __init__(self, name=None, expires_in=None, quality=None):
+    def __init__(self, name="", expires_in=None, quality=None):
         self.name = name
         self.expires_in = expires_in
         self.quality = quality
 
-    def _valid_quality(self):
-        return self.quality in range(1, 50)
+    def _add_quality(self, value):
+        if 0 <= (self.quality + value) <= 50:
+            self.quality += value
 
-    def _increase_quality_by(self, value):
-        self.quality += value
-
-    def _decrease_quality_by(self, value):
-        self.quality -= value
-
-    def quality_before_expiration(self):
-        if self._valid_quality():
-            if self.name == "Blue First":
-                self._increase_quality_by(1)
-            elif self.name == "Blue Compare":
-                if self.expires_in <= 10:
-                    self._increase_quality_by(3 if self.expires_in <= 5 else 2)
-                else:
-                    self._increase_quality_by(1)
-            elif self.name == "Blue Star":
-                self._decrease_quality_by(2)
-            else:
-                self._decrease_quality_by(1)
-
-    def quality_pass_expiration(self):
+    def calculate_quality(self):
+        if self.name == "Blue Distinction Plus":
+            return
+        valid_award_types = {
+            "Blue First": BlueFirst(self).current_value,
+            "Blue Compare": BlueCompare(self).current_value,
+            "Blue Star": BlueStar(self).current_value,
+        }
         self.expires_in -= 1
-        if self.expires_in < 0 and self._valid_quality():
-            if self.name == "Blue First":
-                self._increase_quality_by(1)
-            elif self.name == "Blue Compare":
-                self._decrease_quality_by(self.quality)
-            elif self.name == "Blue Star":
-                self._decrease_quality_by(2)
-            else:
-                self._decrease_quality_by(1)
+        self._add_quality(
+            valid_award_types.get(self.name, NormalAward(self).current_value)
+        )
+

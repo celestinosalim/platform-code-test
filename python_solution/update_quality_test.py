@@ -1,7 +1,7 @@
 import pytest
 
-from award import Award
-from update_quality import update_quality
+from python_solution.award import Award
+from python_solution.update_quality import update_quality
 
 
 @pytest.mark.parametrize(
