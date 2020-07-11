@@ -1,6 +1,7 @@
 *.gem
 *.rbc
 *.pyc
+.venv
 /.config
 /coverage/
 /InstalledFiles
