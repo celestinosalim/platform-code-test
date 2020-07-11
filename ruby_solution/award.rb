@@ -1,3 +1,8 @@
+require "award_types/BlueFirst"
+require "award_types/BlueCompare"
+require "award_types/BlueStar"
+require "award_types/NormalAward"
+
 class Award
   attr_accessor :name, :expires_in, :quality
 
@@ -14,11 +19,11 @@ class Award
   def calculate_quality
     return if self.name == "Blue Distinction Plus"
     valid_product = {
-      "Blue First": self.expires_in <= 0 && self.quality < 49 ? 2 : 1,
-      "Blue Compare": self.expires_in <= 0 ? -self.quality : (self.expires_in <= 10 ? (self.expires_in <= 5 ? 3 : 2) : 1),
-      "Blue Star": self.expires_in <= 0 ? -4 : -2,
+      "Blue First": BlueFirst.new(self).current_value,
+      "Blue Compare": BlueCompare.new(self).current_value,
+      "Blue Star": BlueStar.new(self).current_value,
     }
     self.expires_in -= 1
-    add_quality(valid_product[self.name.to_sym] ? valid_product[self.name.to_sym] : self.expires_in > 0 ? -1 : -2)
+    add_quality(valid_product[self.name.to_sym] ? valid_product[self.name.to_sym] : NormalAward.new(self).current_value)
   end
 end
